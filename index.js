@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const Joi = require('joi');
 const port = 8000;
 
 //Middleware
@@ -21,13 +22,27 @@ app.get('/api/courses', (req, res) => {
 
 //Post Request
 app.post('/api/courses', (req, res) => {
-    const course = {
+
+    //Input validation
+    const schema = {
+        name: Joi.string().min(3).required()
+    };
+
+    const result = Joi.validate(req.body, schema);
+    
+    if (result.error){
+        res.status(400).send(result.error);
+    }
+    
+        const course = {
         id: courses.length + 1,
         name: req.body.name
     }
     courses.push(course);
     res.send(course);
 });
+
+
 
 app.get('/api/courses/:id', (req, res) => {
     const course = courses.find(c => c.id === parseInt(req.params.id))
