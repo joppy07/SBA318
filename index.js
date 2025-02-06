@@ -7,9 +7,9 @@ const port = 8000;
 app.use(express.json());
 
 const courses = [
-    {id: 1, name: 'course1', decs: 'desc1'},
-    {id: 2, name: 'course2', decs: 'desc2'},
-    {id: 3, name: 'course3', decs: 'desc3'},
+    {id: 1, name: 'course1'},
+    {id: 2, name: 'course2'},
+    {id: 3, name: 'course3'},
 ];
 
 app.get('/', (req, res) => {
@@ -42,6 +42,30 @@ app.post('/api/courses', (req, res) => {
     res.send(course);
 });
 
+//Update
+app.put('/api/courses', (req, res) => {
+    const course = courses.find(c => c.id === parseInt(req.params.id))
+    if (!course) res.status(404).send('Course not found');
+
+
+const schema = {
+    name: Joi.string().min(3).required()
+};
+
+const result = Joi.validate(req.body, schema);
+
+if (result.error){
+    res.status(400).send(result.error);
+}
+    course.name = req.body.name;
+    res.send(course);
+});
+
+function validateCourse(course){
+    const schema = {
+        name: Joi.string().min(3).required()
+    }
+}
 
 
 app.get('/api/courses/:id', (req, res) => {
