@@ -67,6 +67,16 @@ function validateCourse(course){
     }
 }
 
+//Delete
+app.delete('/api/courses', (req, res) => {
+    const course = courses.find(c => c.id === parseInt(req.params.id))
+    if (!course) res.status(404).send('Course not found');
+
+    const index = courses.indexOf(course);
+    course.splice(index, 1);
+    res.send(course);
+});
+
 
 app.get('/api/courses/:id', (req, res) => {
     const course = courses.find(c => c.id === parseInt(req.params.id))
